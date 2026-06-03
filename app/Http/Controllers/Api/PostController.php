@@ -7,19 +7,42 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
-use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index() {
+   public function index() {
+        $query = Post::query()
+            ->with([
+                'user',
+                'category',
+            ]);
+
+        if ($search = request('search')) {
+            $query->where(
+                'title',
+                'like',
+                "%{$search}%"
+            );
+        }
+
+        if ($category = request('category')) {
+            $query->where(
+                'category_id',
+                $category
+            );
+        }
+
+        if (request('sort') === 'oldest') {
+            $query->oldest();
+        } else {
+            $query->latest();
+        }
+
         return PostResource::collection(
-            Post::with([
-                'user', 
-                'category'
-            ])->get()
+            $query->paginate(10)
         );
     }
 
@@ -50,7 +73,7 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-  public function update( UpdatePostRequest $request, Post $post){
+  public function update( UpdatePostRequest $request, Post $post) {
         $post->update($request->validated());
 
         return new PostResource(
