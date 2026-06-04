@@ -13,7 +13,7 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-   public function index() {
+    public function index() {
         $query = Post::query()
             ->with([
                 'user',
@@ -42,7 +42,7 @@ class PostController extends Controller
         }
 
         return PostResource::collection(
-            $query->paginate(10)
+              $query->paginate(10)->withQueryString()
         );
     }
 
@@ -52,7 +52,7 @@ class PostController extends Controller
     public function store(StorePostRequest $request) {
         $post = Post::create([
             ...$request->validated(),
-            'user_id' => 1,
+            'user_id' => $request->user()->id,
         ]);
 
         return new PostResource(
@@ -73,7 +73,10 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-  public function update( UpdatePostRequest $request, Post $post) {
+    public function update( UpdatePostRequest $request, Post $post) {
+
+        $this->authorize('update', $post);
+
         $post->update($request->validated());
 
         return new PostResource(
@@ -87,7 +90,10 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-  public function destroy(Post $post) {
+    public function destroy(Post $post) {
+
+        $this->authorize('delete', $post);
+
         $post->delete($post->id);
 
         return response()->noContent();
