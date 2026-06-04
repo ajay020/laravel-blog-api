@@ -40,7 +40,11 @@ class PostResource extends JsonResource
 
             'created_at' => $this->created_at,
 
-           
+            'tags' => $this->tags->map(fn ($tag) => [
+                'id' => $tag->id,
+                'name' => $tag->name,
+                'slug' => $tag->slug,
+            ]),
         ];
     }
 }

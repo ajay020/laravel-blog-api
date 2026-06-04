@@ -28,6 +28,9 @@ class StorePostRequest extends FormRequest
             'body' => ['required'],
             'published' => ['boolean'],
             'category_id' => ['required', 'exists:categories,id'],
+           
+            'tags' => ['sometimes', 'array'],
+            'tags.*' => ['exists:tags,id'],
         ];
     }
 }

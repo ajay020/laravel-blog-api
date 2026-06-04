@@ -7,6 +7,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use Illuminate\Support\Arr;
 
 class PostController extends Controller
 {
@@ -18,6 +19,7 @@ class PostController extends Controller
             ->with([
                 'user',
                 'category',
+                 'tags',
             ])
             ->withCount('comments');
 
@@ -52,9 +54,16 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request) {
         $post = Post::create([
-            ...$request->validated(),
+            ... Arr::except(
+                    $request->validated(),
+                    ['tags']
+                ),
             'user_id' => $request->user()->id,
         ]);
+
+        $post->tags()->sync(
+            $request->input('tags', [])
+        );
 
         return new PostResource(
             $post->load(['user', 'category'])
@@ -68,6 +77,7 @@ class PostController extends Controller
         return new PostResource($post->load([
             'user',
             'category',
+             'tags',
             'comments.user',
         ]));
     }
@@ -79,7 +89,16 @@ class PostController extends Controller
 
         $this->authorize('update', $post);
 
-        $post->update($request->validated());
+        $post->update(
+            Arr::except(
+                $request->validated(),
+                ['tags']
+            )
+        );
+
+        $post->tags()->sync(
+            $request->input('tags', [])
+        );
 
         return new PostResource(
             $post->load([
