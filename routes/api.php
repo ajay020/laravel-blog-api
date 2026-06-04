@@ -3,7 +3,9 @@
 use App\Http\Controllers\Api\PostController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CommentController;
 
+// Posts Routes
 Route::get('posts', [PostController::class, 'index']);
 Route::get('posts/{post}', [PostController::class, 'show']);
 
@@ -16,6 +18,23 @@ Route::middleware('auth:sanctum')
 
 // Route::apiResource('posts', PostController::class)->middleware('auth:sanctum');
 
+
+// Comments Routes
+Route::get(
+    'posts/{post}/comments',
+    [CommentController::class, 'index']
+);
+
+Route::middleware('auth:sanctum')
+    ->group(function () {
+
+        Route::post(
+            'posts/{post}/comments',
+            [CommentController::class, 'store']
+        );
+    });
+
+// Authentication Routes
 Route::post(
     'register',
     [AuthController::class, 'register']
@@ -28,7 +47,7 @@ Route::post(
 
 Route::middleware('auth:sanctum')
     ->group(function () {
-
+        
         Route::post(
             'logout',
             [AuthController::class, 'logout']
@@ -38,4 +57,4 @@ Route::middleware('auth:sanctum')
             'me',
             [AuthController::class, 'me']
         );
-});
+    });
