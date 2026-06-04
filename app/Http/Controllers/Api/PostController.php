@@ -18,7 +18,8 @@ class PostController extends Controller
             ->with([
                 'user',
                 'category',
-            ]);
+            ])
+            ->withCount('comments');
 
         if ($search = request('search')) {
             $query->where(
@@ -66,7 +67,8 @@ class PostController extends Controller
     public function show(Post $post){
         return new PostResource($post->load([
             'user',
-            'category'
+            'category',
+            'comments.user',
         ]));
     }
 

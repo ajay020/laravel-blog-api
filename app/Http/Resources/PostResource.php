@@ -20,6 +20,12 @@ class PostResource extends JsonResource
             'slug' => $this->slug,
             'body' => $this->body,
             'published' => $this->published,
+            
+            'comments_count' => $this->comments_count,
+
+            'comments' => CommentResource::collection(
+                $this->whenLoaded('comments')
+            ),
 
             'author' => [
                 'id' => $this->user->id,
@@ -33,6 +39,8 @@ class PostResource extends JsonResource
             ],
 
             'created_at' => $this->created_at,
+
+           
         ];
     }
 }

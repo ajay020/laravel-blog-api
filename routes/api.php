@@ -32,6 +32,16 @@ Route::middleware('auth:sanctum')
             'posts/{post}/comments',
             [CommentController::class, 'store']
         );
+
+        Route::put(
+            'comments/{comment}',
+            [CommentController::class, 'update']
+        );
+
+        Route::delete(
+            'comments/{comment}',
+            [CommentController::class, 'destroy']
+        );
     });
 
 // Authentication Routes
@@ -47,7 +57,7 @@ Route::post(
 
 Route::middleware('auth:sanctum')
     ->group(function () {
-        
+
         Route::post(
             'logout',
             [AuthController::class, 'logout']

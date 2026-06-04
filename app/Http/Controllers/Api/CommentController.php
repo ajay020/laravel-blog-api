@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCommentRequest;
+use App\Http\Requests\UpdateCommentRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Http\Resources\CommentResource;
+use App\Models\Comment;
 
 class CommentController extends Controller
 {
@@ -53,16 +55,29 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
+    public function update(
+        UpdateCommentRequest $request,
+        Comment $comment
+    ) {
+        $this->authorize('update', $comment);
+
+        $comment->update([
+            'body' => $request->body,
+        ]);
+
+        return new CommentResource(
+            $comment->load('user')
+        );
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
+    public function destroy(Comment $comment) { // Route Model Binding
+        $this->authorize('delete', $comment);
+
+        $comment->delete($comment->id);
+
+        return response()->noContent();
     }
 }
