@@ -32,7 +32,6 @@ return new class extends Migration
             $table->boolean('published')
                 ->default(false);
 
-
             $table->timestamps();
         });
     }

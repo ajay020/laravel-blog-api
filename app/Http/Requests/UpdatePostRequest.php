@@ -28,12 +28,12 @@ class UpdatePostRequest extends FormRequest
             'slug' => [
                 'required',
                 Rule::unique('posts', 'slug')
-                    ->ignore($this->post)
+                    ->ignore($this->post),
             ],
             'body' => ['required'],
             'published' => ['boolean'],
             'category_id' => ['required', 'exists:categories,id'],
-            
+
             'tags' => ['sometimes', 'array'],
             'tags.*' => ['exists:tags,id'],
         ];

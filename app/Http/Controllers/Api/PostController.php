@@ -8,6 +8,7 @@ use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -19,7 +20,7 @@ class PostController extends Controller
             ->with([
                 'user',
                 'category',
-                 'tags',
+                'tags',
             ])
             ->withCount('comments');
 
@@ -45,7 +46,7 @@ class PostController extends Controller
         }
 
         return PostResource::collection(
-              $query->paginate(10)->withQueryString()
+            $query->paginate(10)->withQueryString()
         );
     }
 
@@ -53,12 +54,22 @@ class PostController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StorePostRequest $request) {
+        $imagePath = null;
+
+        if ($request->hasFile('image')) {
+
+            $imagePath = $request
+                ->file('image')
+                ->store('posts', 'public');
+        }
+
         $post = Post::create([
-            ... Arr::except(
-                    $request->validated(),
-                    ['tags']
-                ),
+            ...Arr::except(
+                $request->validated(),
+                ['tags']
+            ),
             'user_id' => $request->user()->id,
+            'image_path' => $imagePath,
         ]);
 
         $post->tags()->sync(
@@ -73,11 +84,11 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Post $post){
+    public function show(Post $post) {
         return new PostResource($post->load([
             'user',
             'category',
-             'tags',
+            'tags',
             'comments.user',
         ]));
     }
@@ -85,16 +96,27 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update( UpdatePostRequest $request, Post $post) {
-
+    public function update(UpdatePostRequest $request, Post $post) {
         $this->authorize('update', $post);
 
-        $post->update(
-            Arr::except(
-                $request->validated(),
-                ['tags']
-            )
+        $attributes = Arr::except(
+            $request->validated(),
+            ['tags']
         );
+
+        if ($request->hasFile('image')) {
+
+            if ($post->image_path) {
+                Storage::disk('public')
+                    ->delete($post->image_path);
+            }
+
+            $attributes['image_path'] = $request
+                ->file('image')
+                ->store('posts', 'public');
+        }
+
+        $post->update($attributes);
 
         $post->tags()->sync(
             $request->input('tags', [])
@@ -112,8 +134,12 @@ class PostController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Post $post) {
-
         $this->authorize('delete', $post);
+
+        if($post->image_path) {
+            Storage::disk('public')
+            ->delete($post->image_path);
+        }
 
         $post->delete($post->id);
 

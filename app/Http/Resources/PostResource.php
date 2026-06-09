@@ -12,7 +12,7 @@ class PostResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-   public function toArray(Request $request): array
+    public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
@@ -20,7 +20,7 @@ class PostResource extends JsonResource
             'slug' => $this->slug,
             'body' => $this->body,
             'published' => $this->published,
-            
+
             'comments_count' => $this->comments_count,
 
             'comments' => CommentResource::collection(
@@ -45,6 +45,10 @@ class PostResource extends JsonResource
                 'name' => $tag->name,
                 'slug' => $tag->slug,
             ]),
+
+            'image_url' => $this->image_path
+                ? asset("storage/{$this->image_path}")
+                : null,
         ];
     }
 }

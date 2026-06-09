@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('post_tag', function (Blueprint $table) {
-            
+
             $table->foreignId('post_id')
                 ->constrained()
                 ->cascadeOnDelete();
@@ -23,7 +23,7 @@ return new class extends Migration
 
             $table->primary([
                 'post_id',
-                'tag_id'
+                'tag_id',
             ]);
 
         });

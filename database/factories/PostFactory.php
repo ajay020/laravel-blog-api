@@ -2,12 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\Post;
-use Illuminate\Database\Eloquent\Factories\Factory;
-
-use Illuminate\Support\Str; 
-use App\Models\User;
 use App\Models\Category;
+use App\Models\Post;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Post>
@@ -25,7 +24,7 @@ class PostFactory extends Factory
 
         return [
             'title' => $title,
-            'slug' => Str::slug($title) . '-' . fake()->unique()->numberBetween(1, 10000),
+            'slug' => Str::slug($title).'-'.fake()->unique()->numberBetween(1, 10000),
             'body' => fake()->paragraphs(5, true),
             'published' => true,
 

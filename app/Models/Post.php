@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-
     use HasFactory;
 
     protected $fillable = [
@@ -17,8 +16,8 @@ class Post extends Model
         'published',
         'user_id',
         'category_id',
+        'image_path',
     ];
-
 
     public function user()
     {
@@ -30,11 +29,13 @@ class Post extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function comments() {
+    public function comments()
+    {
         return $this->hasMany(Comment::class);
     }
 
-    public function tags() {
+    public function tags()
+    {
         return $this->belongsToMany(Tag::class);
     }
 }
