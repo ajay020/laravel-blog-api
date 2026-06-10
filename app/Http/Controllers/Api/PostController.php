@@ -93,7 +93,7 @@ class PostController extends Controller
             'category',
             'tags',
             'comments.user',
-        ]));
+        ]))->loadCount('comments');
     }
 
     /**

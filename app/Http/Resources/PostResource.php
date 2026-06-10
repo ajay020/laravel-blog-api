@@ -21,30 +21,44 @@ class PostResource extends JsonResource
             'body' => $this->body,
             'published' => $this->published,
 
-            'comments_count' => $this->comments_count,
-
             'comments' => CommentResource::collection(
                 $this->whenLoaded('comments')
             ),
 
-            'author' => [
-                'id' => $this->user->id,
-                'name' => $this->user->name,
-            ],
+            'comments_count' => $this->whenCounted(
+                'comments'
+            ),
 
-            'category' => [
-                'id' => $this->category->id,
-                'name' => $this->category->name,
-                'slug' => $this->category->slug,
-            ],
+            'author' => UserResource::make(
+                $this->whenLoaded('user')
+            ),
+
+            // 'author' => [
+            //     'id' => $this->user->id,
+            //     'name' => $this->user->name,
+            // ],
+
+            'category' =>  CategoryResource::make(
+                $this->whenLoaded('category')
+            ),
+
+            // 'category' => [
+            //     'id' => $this->category->id,
+            //     'name' => $this->category->name,
+            //     'slug' => $this->category->slug,
+            // ],
 
             'created_at' => $this->created_at,
 
-            'tags' => $this->tags->map(fn ($tag) => [
-                'id' => $tag->id,
-                'name' => $tag->name,
-                'slug' => $tag->slug,
-            ]),
+            // 'tags' => $this->tags->map(fn ($tag) => [
+            //     'id' => $tag->id,
+            //     'name' => $tag->name,
+            //     'slug' => $tag->slug,
+            // ]),
+
+            'tags' => TagResource::collection(
+                $this->whenLoaded('tags')
+            ),
 
             'image_url' => $this->image_path
                 ? asset("storage/{$this->image_path}")
