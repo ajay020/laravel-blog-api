@@ -76,8 +76,11 @@ class PostController extends Controller
             $request->input('tags', [])
         );
 
-        return new PostResource(
-            $post->load(['user', 'category'])
+        return response()->json(
+            new PostResource(
+                $post->load(['user', 'category'])
+            ),
+            201
         );
     }
 
@@ -122,11 +125,11 @@ class PostController extends Controller
             $request->input('tags', [])
         );
 
-        return new PostResource(
-            $post->load([
-                'user',
-                'category',
-            ])
+        return response()->json(
+             new PostResource(
+                $post->load(['user', 'category'])
+            ),
+            200
         );
     }
 

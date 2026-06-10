@@ -20,10 +20,10 @@ class AuthController extends Controller
         $token = $user->createToken('api-token')
             ->plainTextToken;
 
-        return [
+        return response()->json([
             'user' => $user,
             'token' => $token,
-        ];
+        ], 201);
     }
 
     public function login(LoginRequest $request)
@@ -40,14 +40,16 @@ class AuthController extends Controller
             ->createToken('api-token')
             ->plainTextToken;
 
-        return [
+
+       return response()->json([
             'user' => $user,
             'token' => $token,
-        ];
+        ]);
     }
 
     public function logout(Request $request)
     {
+        
         $request->user()
             ->currentAccessToken()
             ->delete();
