@@ -15,37 +15,54 @@ class PostController extends Controller {
      * Display a listing of the resource.
      */
     public function index() {
-        $query = Post::query()
-            ->with([
-                'user',
-                'category',
-                'tags',
-            ])
-            ->withCount('comments');
+        // $query = Post::query()
+        //     ->with([
+        //         'user',
+        //         'category',
+        //         'tags',
+        //     ])
+        //     ->withCount('comments');
 
-        if ($search = request('search')) {
-            $query->where(
-                'title',
-                'like',
-                "%{$search}%"
-            );
-        }
+        // if ($search = request('search')) {
+        //     $query->where(
+        //         'title',
+        //         'like',
+        //         "%{$search}%"
+        //     );
+        // }
 
-        if ($category = request('category')) {
-            $query->where(
-                'category_id',
-                $category
-            );
-        }
+        // if ($category = request('category')) {
+        //     $query->where(
+        //         'category_id',
+        //         $category
+        //     );
+        // }
 
-        if (request('sort') === 'oldest') {
-            $query->oldest();
-        } else {
-            $query->latest();
-        }
+        // if (request('sort') === 'oldest') {
+        //     $query->oldest();
+        // } else {
+        //     $query->latest();
+        // }
+
+        // return PostResource::collection(
+        //     $query->paginate(10)->withQueryString()
+        // );
 
         return PostResource::collection(
-            $query->paginate(10)->withQueryString()
+            Post::query()
+                ->with([
+                    'user',
+                    'category',
+                    'tags',
+                ])
+                ->published()
+                ->withCount('comments')
+                ->search(request('search'))
+                ->inCategory(request('category'))
+                ->tag(request('tag'))
+                ->sort(request('sort'))
+                ->paginate(10)
+                ->withQueryString()
         );
     }
 
