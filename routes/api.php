@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\TagController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -128,3 +129,7 @@ Route::middleware('auth:sanctum')
             [AuthController::class, 'me']
         );
     });
+
+
+// Tags Routes
+Route::get('tags', [TagController::class, 'index']);
