@@ -10,8 +10,7 @@ use App\Models\Post;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 
-class PostController extends Controller
-{
+class PostController extends Controller {
     /**
      * Display a listing of the resource.
      */
@@ -145,6 +144,8 @@ class PostController extends Controller
         }
 
         $post->delete($post->id);
+
+        // Post::destroy($post->id);
 
         return response()->noContent();
     }
