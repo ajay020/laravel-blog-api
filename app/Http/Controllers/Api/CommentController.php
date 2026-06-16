@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\Post;
+use App\Notifications\CommentAddedNotification;
 
 class CommentController extends Controller
 {
@@ -37,6 +38,10 @@ class CommentController extends Controller
             'body' => $request->body,
             'user_id' => $request->user()->id,
         ]);
+
+        if ($post->user->id !== auth()->id()) {
+            $post->user->notify(new CommentAddedNotification($comment));
+        }
 
         return new CommentResource(
             $comment->load('user')
