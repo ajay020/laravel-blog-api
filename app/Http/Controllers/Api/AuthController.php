@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\UserRegistered;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
@@ -11,11 +12,13 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request)
-    {
+    public function register(RegisterRequest $request) {
         $user = User::create(
             $request->validated()
         );
+
+        // dispath an event after user registration
+        UserRegistered::dispatch($user);
 
         $token = $user->createToken('api-token')
             ->plainTextToken;
