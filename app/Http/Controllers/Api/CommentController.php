@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\CommentCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
@@ -39,9 +40,8 @@ class CommentController extends Controller
             'user_id' => $request->user()->id,
         ]);
 
-        if ($post->user->id !== auth()->id()) {
-            $post->user->notify(new CommentAddedNotification($comment));
-        }
+        // dispatch comment add notification event
+        CommentCreated::dispatch($comment);
 
         return new CommentResource(
             $comment->load('user')

@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Comment;
+use Illuminate\Support\Facades\Log;
 
 class CommentAddedNotification extends Notification implements ShouldQueue
 {
@@ -34,6 +35,9 @@ class CommentAddedNotification extends Notification implements ShouldQueue
      * Get the mail representation of the notification.
      */
     public function toMail(object $notifiable): MailMessage {
+
+        // Log::info('Mail sent');
+
         return (new MailMessage)
             ->subject('New Comment on Your Post')
             ->greeting("Hello {$notifiable->name},")
@@ -52,11 +56,10 @@ class CommentAddedNotification extends Notification implements ShouldQueue
      *
      * @return array<string, mixed>
      */
-    public function toArray(object $notifiable): array
-    {
-         return [
+    public function toArray(object $notifiable): array {
+        return [
             'comment_id' => $this->comment->id,
-            'post_id' => $this->comment->post->id,
+            'post_id' => $this->comment->post_id,
             'post_title' => $this->comment->post->title,
             'comment' => $this->comment->body,
         ];
