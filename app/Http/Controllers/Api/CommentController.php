@@ -9,7 +9,6 @@ use App\Http\Requests\UpdateCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\Post;
-use App\Notifications\CommentAddedNotification;
 
 class CommentController extends Controller
 {

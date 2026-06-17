@@ -15,18 +15,15 @@ class UserRegistered
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     
-    public User $user;
-
     /**
      * Create a new event instance.
      */
-    public function __construct( User $user )
+    public function __construct( public  User $user )
     {
          // Validate the input
         if (!($user instanceof User)) {
             throw new \InvalidArgumentException('Invalid User instance passed to event.');
         }
-        $this->user = $user;
     }
 
     /**

@@ -36,8 +36,6 @@ class CommentAddedNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage {
 
-        // Log::info('Mail sent');
-
         return (new MailMessage)
             ->subject('New Comment on Your Post')
             ->greeting("Hello {$notifiable->name},")

@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 
-class SendWelcomeEmail
+class SendWelcomeEmail  implements ShouldQueue 
 {
     /**
      * Create the event listener.
@@ -22,9 +22,7 @@ class SendWelcomeEmail
      */
     public function handle(UserRegistered $event): void
     {
-        // Safely handle the event
         try {
-            // Example: send email (simplified)
             Log::info('Welcome email sent to: ' . $event->user->email);
         } catch (\Throwable $e) {
             Log::error('Failed to send welcome email: ' . $e->getMessage());
